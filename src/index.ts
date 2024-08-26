@@ -1,19 +1,24 @@
 import { GithubApiService } from "./GithubApiService";
 import { Repo } from "./Repo";
 import { User } from "./User";
+import * as _ from 'lodash';
 
 console.log("hello");
 
+// const USERNAME = "annu4git";
+const USERNAME = "koushikkothagal";
+
 var service = new GithubApiService();
-service.getUserInfo("annu4git", (user : User) => {
-    console.log(user);
+service.getUserInfo(USERNAME, (user : User) => {
+    service.getRepos(USERNAME, (repos : Repo[]) => {
+        console.log(" Total repos : " + repos.length);
+        let sortedRepos = _.sortBy(repos, [function(repo) { return repo.forkCount * -1; }]);
+        let filteredRepos = _.take(sortedRepos, 5);
+        user.repos = filteredRepos;
+        console.log(user);
+    });
 });
 
-service.getRepos("annu4git", (repos : Repo[]) => {
-    console.log(repos.length);
-    for(let i = 0; i < repos.length; i++) {
-        console.log(repos[i].name);
-    }
-});
+
 
 
